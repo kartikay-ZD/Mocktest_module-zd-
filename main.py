@@ -33,7 +33,10 @@ def read_root():
 
 @app.post("/tech-stacks/", response_model=schemas.TechStack)
 def create_tech_stack(stack: schemas.TechStackCreate, db: Session = Depends(get_db)):
-    return crud.create_tech_stack(db=db, stack=stack)
+    db_stack = crud.get_tech_stack_by_name(db, stack.name)
+    if db_stack:
+        raise HTTPException(status_code=409, detail="Tech stack with this name already exists")
+    return crud.create_tech_stack(db=db, stack=stack) # This will now always create a new one
 
 @app.get("/tech-stacks/", response_model=List[schemas.TechStack])
 def read_tech_stacks(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):

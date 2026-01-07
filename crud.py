@@ -14,7 +14,13 @@ def get_candidates(db: Session, skip: int = 0, limit: int = 100):
 
 
 def create_candidate(db: Session, candidate: schemas.CandidateCreate):
-    db_candidate = models.Candidate(name=candidate.name, email=candidate.email)
+    db_candidate = models.Candidate(
+        name=candidate.name,
+        email=candidate.email,
+        profile_exp=candidate.profile_exp,
+        passing_year=candidate.passing_year,
+        graduation_details=candidate.graduation_details
+    )
     db.add(db_candidate)
     db.commit()
     db.refresh(db_candidate)
@@ -31,6 +37,9 @@ def get_tech_stacks(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.TechStack).offset(skip).limit(limit).all()
 
 def create_tech_stack(db: Session, stack: schemas.TechStackCreate):
+    existing_stack = get_tech_stack_by_name(db, stack.name)
+    if existing_stack:
+        return existing_stack # Return existing stack if it already exists
     db_stack = models.TechStack(name=stack.name)
     db.add(db_stack)
     db.commit()
@@ -38,7 +47,7 @@ def create_tech_stack(db: Session, stack: schemas.TechStackCreate):
     return db_stack
 
 def create_question(db: Session, question: schemas.QuestionCreate):
-    db_question = models.Question(**question.dict())
+    db_question = models.Question(**question.model_dump())
     db.add(db_question)
     db.commit()
     db.refresh(db_question)

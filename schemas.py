@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 from typing import List, Optional
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict
 
 from models import CorrectnessEnum, MockStatusEnum
 
@@ -23,8 +23,7 @@ class QuestionCreate(QuestionBase):
 class Question(QuestionBase):
     id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # --- TechStack Schemas ---
@@ -38,8 +37,7 @@ class TechStack(TechStackBase):
     id: int
     questions: List[Question] = []
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # --- Mock Schemas ---
@@ -64,8 +62,7 @@ class Mock(MockBase):
     created_at: datetime.datetime
     questions: List[Question] = []
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # --- Candidate Schemas ---
@@ -83,8 +80,7 @@ class Candidate(CandidateBase):
     id: int
     created_at: datetime.datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # --- SessionAnswer Schemas ---
@@ -100,8 +96,7 @@ class SessionAnswer(SessionAnswerBase):
     correctness: Optional[CorrectnessEnum] = None
     mock_session_id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # --- MockSession Schemas ---
@@ -123,5 +118,4 @@ class MockSession(MockSessionBase):
     candidate: Candidate
     mock: Mock
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
